@@ -1,0 +1,73 @@
+# Get staged JS/TS files inside src, but exclude __test__ folder
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^src/.*\.(js|ts|jsx|tsx)$' || true)
+
+# Skip coverage and formatting if no relevant files are staged
+if [ -z "$FILES" ]; then
+  exit 0
+fi
+
+# Check for corresponding test files in any subfolder of src/__test__
+MISSING_TESTS=0
+for FILE in $FILES; do
+  # Skip files that are already test files
+  if [[ "$FILE" == *.test.js || "$FILE" == *.test.ts || "$FILE" == *.test.jsx || "$FILE" == *.test.tsx ]]; then
+    continue
+  fi
+  BASENAME=$(basename "$FILE" | sed -E 's/\.(js|ts|jsx|tsx)$//')
+  EXT="${FILE##*.}"
+  MATCHING_TEST=$(find src/__test__ -type f -name "${BASENAME}.test.${EXT}")
+  if [ -z "$MATCHING_TEST" ]; then
+    echo "❌ Missing test file for $FILE (expected: src/__test__/**/${BASENAME}.test.${EXT})"
+    MISSING_TESTS=1
+  fi
+done
+
+if [ $MISSING_TESTS -eq 1 ]; then
+  echo " "
+  echo " ===================================================== MISSING TEST FILES =================================================== "
+  echo "❌ All staged files must have corresponding test files."
+  exit 1
+fi
+
+# Check test status
+if ! npm test; then
+  echo " "
+  echo " ===================================================== TEST FAILED =================================================== "
+  echo "❌ Tests failed . Please run:"
+  echo "    npm run test" 
+  exit 1
+fi
+
+# Run vitest coverage for each staged file and check threshold
+COVERAGE_OK=1
+for FILE in $FILES; do
+  if ! npx vitest run --coverage.enabled true --coverage.include="$FILE" --coverage.threshold.lines=80 ; then
+    echo " "
+    echo " ===================================================== "$FILE" COVERAGE FAILED =================================================== "
+    echo "❌ Coverage for $FILE is below 80%."
+    COVERAGE_OK=0
+  fi
+done
+
+if [ $COVERAGE_OK -eq 0 ]; then
+  echo " "
+  echo " ===================================================== COVERAGE FAILED =================================================== "
+  echo "❌ All staged files must have at least 80% test coverage."
+  exit 1
+fi
+
+# Run linted-staged
+if ! npx lint-staged ; then 
+  echo " "
+  echo " ===================================================== LINT STAGED =================================================== "
+  exit 1
+fi
+
+# Run prettier in silent mode and capture result, warn if issues
+if ! prettier --check $FILES --ignore-unknown ; then
+  echo " "
+  echo " ===================================================== PRETTIER WARNINGS =================================================== "
+  echo "⚠️   Prettier found formatting issues in the following files:"
+  echo "     Run this command to Fix ✅ : ======  [npm run format]  ========"
+  exit 1
+fi

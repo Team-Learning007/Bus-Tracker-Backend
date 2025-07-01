@@ -1,0 +1,23 @@
+message="$(cat "$1" | tr -d '\r')"
+requiredPattern="^(feat|fix|test|docs|style|refactor|perf|chore|build|ci|revert): .{1,180}$"
+
+if ! echo "$message" | grep -Eq "$requiredPattern"; then
+  echo " "
+  echo " ============================================= 🚨 Invalid commit message! ==================================================="
+  echo "Your commit message must follow this format:"
+  echo ""
+  echo "<type>: <short description>"
+  echo ""
+  echo "Allowed types:"
+  echo "feat, fix, test, docs, style, refactor, perf, chore, build, ci, revert"
+  echo ""
+  echo "✅ Examples:"
+  echo "feat: add user login functionality"
+  echo "fix: correct typo in home page title"
+  echo "test: add unit tests for auth utils"
+  echo ""
+  echo "Your commit message was:"
+  echo "$message"
+  echo "-"
+  exit 1
+fi

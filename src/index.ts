@@ -1,0 +1,14 @@
+import express, { Request, Response } from 'express';
+
+const app = express();
+const PORT: string = process.env.PORT ?? '3000';
+
+app.get('/', (_req: Request, res: Response) => {
+  res.send('Bus Tracker Application');
+});
+
+app.listen(PORT, () => {
+  console.log(`App listen on port ${PORT}`);
+});
+
+export default app;
