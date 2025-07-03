@@ -19,11 +19,11 @@ npm install
 
 ### Running the Server
 
-- **Development**:  
+- **Development**:
   ```sh
   npm run dev
   ```
-- **Production**:  
+- **Production**:
   ```sh
   npm run build
   npm start
@@ -35,15 +35,15 @@ The server will start on the port defined in `.env` (`PORT=5000` by default).
 
 ## 🧪 Testing
 
-- **Run all tests:**  
+- **Run all tests:**
   ```sh
   npm test
   ```
-- **Run tests with coverage:**  
+- **Run tests with coverage:**
   ```sh
   npm run coverage
   ```
-- **Test UI:**  
+- **Test UI:**
   ```sh
   npm run test:ui
   ```
@@ -56,25 +56,31 @@ Test files should be placed in `src/__test__/`.
 
 ### Linting
 
-- **Check lint:**  
+- **Check lint:**
   ```sh
   npm run lint
   ```
-- **Auto-fix lint:**  
+- **Auto-fix lint:**
   ```sh
   npm run lint:fix
   ```
 
 ### Formatting
 
-- **Format code:**  
+- **Format code:**
   ```sh
   npm run format
   ```
-- **Check formatting:**  
+- **Check formatting:**
   ```sh
   npm run format:check
   ```
+
+---
+
+## 📚 Documentation
+
+- [Logger Usage Guide](docs/logger.md)
 
 ---
 
@@ -84,7 +90,7 @@ This project uses [Husky](https://typicode.github.io/husky/) to enforce:
 
 - **Commit message style:**  
   See [`docs/commitmsg.md`](docs/commitmsg.md) for allowed types and examples.
-- **Pre-commit checks:**  
+- **Pre-commit checks:**
   - All staged source files must have corresponding test files.
   - All tests must pass.
   - Each staged file must have at least 80% test coverage.
