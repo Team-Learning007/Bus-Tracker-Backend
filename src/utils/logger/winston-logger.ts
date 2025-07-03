@@ -20,13 +20,10 @@ const logger = createLogger({
   format: format.combine(
     format.colorize(),
     format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    format.printf((info) => {
-      const timestamp = String(info.timestamp);
-      const level = String(info.level);
-      const message = String(info.message);
-
-      return `[${timestamp}] ${level}: ${message}`;
-    }),
+    format.printf(
+      ({ level, message, timestamp }) =>
+        `${String(timestamp)} ${String(level)}: ${String(message)}`,
+    ),
   ),
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   levels: customLevels.levels,
