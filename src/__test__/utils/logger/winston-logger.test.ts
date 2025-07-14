@@ -32,7 +32,7 @@ describe('Logging', () => {
     expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining('error'));
   });
 
-  test('should test debug not shown in production enviornment', async () => {
+  test('should test debug not shown in production environment', async () => {
     vi.stubEnv('NODE_ENV', 'production');
 
     vi.resetModules();
@@ -42,7 +42,7 @@ describe('Logging', () => {
     expect(logger.level).not.toBe('debug');
   });
 
-  test('should test debug shown in development enviornment', async () => {
+  test('should test debug shown in development environment', async () => {
     vi.stubEnv('NODE_ENV', 'development');
 
     vi.resetModules();

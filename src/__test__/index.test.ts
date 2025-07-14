@@ -10,7 +10,7 @@ vi.mock('#database/dbConnect.js', () => ({
   default: connectMock,
 }));
 
-vi.mock('#routes/AppRouter.js', () => ({
+vi.mock('#routes/appRouter.routes.js', () => ({
   default: (_req: Request, res: Response) => res.send('Mock Router'),
 }));
 

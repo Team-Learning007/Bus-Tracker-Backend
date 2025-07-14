@@ -1,17 +1,19 @@
 import dbConnect from '#database/dbConnect.js';
-import appRouter from '#routes/AppRouter.js';
+import globalErrorHandlerMiddleware from '#middlewares/globalErrorHandler.middleware.js';
+import appRouter from '#routes/appRouter.routes.js';
 import logger from '#utils/logger/winston-logger.js';
-import express from 'express';
+import express, { json } from 'express';
 
 const app = express();
 const PORT: string = process.env.PORT ?? '3000';
 
+app.use(json());
+app.use('/', appRouter);
+app.use(globalErrorHandlerMiddleware);
+
 const startService = async () => {
   try {
     await dbConnect();
-
-    app.use(appRouter);
-
     app.listen(PORT, () => {
       logger.info(`App listen on port ${PORT}`);
     });
