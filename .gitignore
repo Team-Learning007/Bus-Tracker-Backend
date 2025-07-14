@@ -2,6 +2,9 @@
 .env
 .env.*
 
+#Ignore Main file For running
+main.ts
+
 # Dependencies
 /node_modules
 
