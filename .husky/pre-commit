@@ -13,6 +13,12 @@ for FILE in $FILES; do
   if [[ "$FILE" == *.test.js || "$FILE" == *.test.ts || "$FILE" == *.test.jsx || "$FILE" == *.test.tsx ]]; then
     continue
   fi
+
+  # Skip type files
+  if [[ "$FILE" == *.type.js || "$FILE" == *.type.ts || "$FILE" == *.type.jsx || "$FILE" == *.type.tsx ]]; then
+    continue
+  fi
+  
   BASENAME=$(basename "$FILE" | sed -E 's/\.(js|ts|jsx|tsx)$//')
   EXT="${FILE##*.}"
   MATCHING_TEST=$(find src/__test__ -type f -name "${BASENAME}.test.${EXT}")
