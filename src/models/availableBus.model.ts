@@ -7,17 +7,18 @@ import mongoose, { Model, Schema } from 'mongoose';
 
 const AvailableBusSchema: Schema = new Schema(
   {
-    _driver: {
-      ref: 'Drivers',
-      type: mongoose.Schema.Types.ObjectId,
-    },
     active: {
       required: true,
       type: Boolean,
     },
+    driverId: {
+      index: true,
+      ref: 'Drivers',
+      type: mongoose.Schema.Types.ObjectId,
+    },
     route: {
-      endDestination: String,
-      startDestination: String,
+      destination: String,
+      origin: String,
     },
   },
   {

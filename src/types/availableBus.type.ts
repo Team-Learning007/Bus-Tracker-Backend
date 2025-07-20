@@ -2,12 +2,12 @@ import { ObjectId } from 'mongodb';
 import { Document } from 'mongoose';
 
 export default interface IAvailableBus extends Document {
-  _driver: ObjectId;
   active: boolean;
   createdAt: Date;
+  driverId: ObjectId;
   route: {
-    endDestination: string;
-    startDestination: string;
+    destination: string;
+    origin: string;
   };
   updatedAt: Date;
 }

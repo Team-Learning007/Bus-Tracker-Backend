@@ -1,4 +1,4 @@
-import checkDevelopmentNodeEnvironment from '#utils/envsChecker.js';
+import checkDevelopmentNodeEnvironment from '#utils/checker/envsChecker.js';
 import { describe, expect, test, vi } from 'vitest';
 
 describe('Test Envs Checker', () => {
