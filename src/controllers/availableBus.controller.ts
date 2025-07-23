@@ -19,6 +19,42 @@ export class AvailableBusController {
     this.requestChecker = new RequestChecker();
   }
 
+  availabelBusActivationStatus = async (req: Request, res: Response) => {
+    const { driverId } = req.params;
+
+    this.requestChecker.driverId(driverId);
+
+    await this.availableBusService.driverNotExists(driverId);
+
+    await this.availableBusService.availabelBusActivationStatus(driverId);
+
+    const response = new BusTrackerApiResponse(
+      true,
+      'Bus Activate Successfully',
+      {},
+    );
+
+    res.status(200).json(response);
+  };
+
+  availableBusDeactivateStatus = async (req: Request, res: Response) => {
+    const { driverId } = req.params;
+
+    this.requestChecker.driverId(driverId);
+
+    await this.availableBusService.driverNotExists(driverId);
+
+    await this.availableBusService.availableBusDeactivationStatus(driverId);
+
+    const response = new BusTrackerApiResponse(
+      true,
+      'Bus Deactivate Successfully',
+      {},
+    );
+
+    res.status(200).json(response);
+  };
+
   createAvailableBus = async (req: Request, res: Response) => {
     const { destination, driverId, origin } =
       req.body as IAvailableBusServiceRequest;

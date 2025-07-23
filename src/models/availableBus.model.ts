@@ -7,7 +7,7 @@ import mongoose, { Model, Schema } from 'mongoose';
 
 const AvailableBusSchema: Schema = new Schema(
   {
-    active: {
+    activeStatus: {
       required: true,
       type: Boolean,
     },

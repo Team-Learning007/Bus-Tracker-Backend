@@ -11,7 +11,7 @@ describe('Test Available Bus Model', () => {
   test('should create and save a new available bus successfully', async () => {
     const mockAvailableBusData: IAvailableBus = {
       _id: new mongoose.Types.ObjectId(),
-      active: true,
+      activeStatus: true,
       createdAt: new Date('2025-05-22T20:48:00.031+00:00'),
       driverId: new mongoose.Types.ObjectId(),
       route: {

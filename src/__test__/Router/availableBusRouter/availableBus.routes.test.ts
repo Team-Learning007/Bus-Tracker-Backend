@@ -11,6 +11,22 @@ app.use('/available-bus', availableBusRouter);
 vi.mock('#controllers/availableBus.controller.js', () => {
   return {
     AvailableBusController: vi.fn().mockImplementation(() => ({
+      availabelBusActivationStatus: vi.fn((_req: Request, res: Response) => {
+        const response = new BusTrackerApiResponse(
+          true,
+          'Mocked Bus Activation',
+          undefined,
+        );
+        return res.status(200).json(response);
+      }),
+      availableBusDeactivateStatus: vi.fn((_req: Request, res: Response) => {
+        const response = new BusTrackerApiResponse(
+          true,
+          'Mocked Bus Deactivate',
+          undefined,
+        );
+        return res.status(200).json(response);
+      }),
       createAvailableBus: vi.fn((_req: Request, res: Response) => {
         const response = new BusTrackerApiResponse(true, 'Mocked Bus Created', {
           busId: 'mock-123',
@@ -37,5 +53,21 @@ describe('Available Bus Router', () => {
     expect(res.text).toBe(
       '{"data":{"busId":"mock-123"},"message":"Mocked Bus Created","success":true}',
     );
+  });
+
+  test('should activate status of available bus on PATCH "/available-bus/:id/activate"', async () => {
+    const res = await request(app).patch('/available-bus/dummyId121/activate');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toBe('{"message":"Mocked Bus Activation","success":true}');
+  });
+
+  test('should deactivate status of available bus on PATCH "/available-bus/:id/deactivate"', async () => {
+    const res = await request(app).patch(
+      '/available-bus/dummyId121/deactivate',
+    );
+
+    expect(res.status).toBe(200);
+    expect(res.text).toBe('{"message":"Mocked Bus Deactivate","success":true}');
   });
 });

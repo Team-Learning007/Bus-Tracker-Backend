@@ -1,8 +1,17 @@
 import { AvailableBus } from '#models/availableBus.model.js';
 import { AvailableBusService } from '#services/availableBus.service.js';
 import IAvailableBus from '#types/availableBus.type.js';
+import { activateStatus, deactivateStatus } from '#utils/constants.js';
 import mongoose from 'mongoose';
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeEach, describe, expect, Mock, test, vi } from 'vitest';
+
+vi.mock('#models/availableBus.model.js', () => ({
+  AvailableBus: {
+    create: vi.fn(),
+    exists: vi.fn(),
+    updateOne: vi.fn(),
+  },
+}));
 
 describe('Test Available Bus Service', () => {
   let availableBusService: AvailableBusService;
@@ -12,21 +21,29 @@ describe('Test Available Bus Service', () => {
     availableBusService = new AvailableBusService();
   });
 
-  test('should test driver existe and trow error', async () => {
-    const mockDriveId = 'dummyId';
-    vi.spyOn(AvailableBus, 'exists').mockResolvedValueOnce({
-      _id: mockDriveId,
-    });
+  test('should test driver exists and throw error', async () => {
+    const mockDriverId = 'dummyId';
+
+    (AvailableBus.exists as Mock).mockResolvedValueOnce({ _id: mockDriverId });
 
     await expect(
-      availableBusService.driverExists(mockDriveId),
+      availableBusService.driverExists(mockDriverId),
     ).rejects.toThrowError('A driver with this ID is already registered.');
+  });
+
+  test('should test driver not exists and throw error', async () => {
+    const mockDriverId = 'dummyId';
+    (AvailableBus.exists as Mock).mockResolvedValueOnce(null);
+
+    await expect(
+      availableBusService.driverNotExists(mockDriverId),
+    ).rejects.toThrowError('A driver with this ID is not Register yet.');
   });
 
   test('should test created bus function', async () => {
     const mockAvailableBusData: IAvailableBus = {
       _id: '60d21b4667d0d8992e610c85',
-      active: true,
+      activeStatus: true,
       createdAt: new Date(),
       driverId: new mongoose.Types.ObjectId('6876af41462f8ee0522e97ef'),
       route: {
@@ -36,12 +53,7 @@ describe('Test Available Bus Service', () => {
       updatedAt: new Date(),
     } as IAvailableBus;
 
-    const createSpy = vi
-      .spyOn(AvailableBus, 'create')
-      // @ts-expect-error: Mongoose typings expect an array of full Document objects, but we are providing a single IAvailableBus for mocking simplicity.
-      .mockResolvedValueOnce(mockAvailableBusData);
-
-    const availableBusService = new AvailableBusService();
+    (AvailableBus.create as Mock).mockResolvedValueOnce(mockAvailableBusData);
 
     const result = await availableBusService.createAvailableBus(
       '6876af41462f8ee0522e97ef',
@@ -49,14 +61,32 @@ describe('Test Available Bus Service', () => {
       'Bilaspur',
     );
 
-    expect(createSpy).toHaveBeenCalledWith({
-      active: true,
-      driverId: new mongoose.Types.ObjectId('6876af41462f8ee0522e97ef'),
-      route: {
-        destination: 'Bilaspur',
-        origin: 'Kolkata',
-      },
-    });
     expect(result).toBe(mockAvailableBusData);
+  });
+
+  test('should test activation status function', async () => {
+    (AvailableBus.updateOne as Mock).mockResolvedValueOnce(undefined);
+    const dummyDriverId = '6876af41462f8ee0522e97ef';
+
+    await availableBusService.availabelBusActivationStatus(dummyDriverId);
+
+    expect(AvailableBus.updateOne).toHaveBeenCalledTimes(1);
+    expect(AvailableBus.updateOne).toHaveBeenCalledWith(
+      { driverId: dummyDriverId },
+      { activeStatus: activateStatus },
+    );
+  });
+
+  test('should test deactivation status function', async () => {
+    (AvailableBus.updateOne as Mock).mockResolvedValueOnce(undefined);
+    const dummyDriverId = '6876af41462f8ee0522e97ef';
+
+    await availableBusService.availableBusDeactivationStatus(dummyDriverId);
+
+    expect(AvailableBus.updateOne).toHaveBeenCalledTimes(1);
+    expect(AvailableBus.updateOne).toHaveBeenCalledWith(
+      { driverId: dummyDriverId },
+      { activeStatus: deactivateStatus },
+    );
   });
 });

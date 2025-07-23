@@ -10,5 +10,13 @@ const availableBusController: AvailableBusController =
   new AvailableBusController(availableService);
 
 availableBusRouter.post('/', availableBusController.createAvailableBus);
+availableBusRouter.patch(
+  '/:driverId/activate',
+  availableBusController.availabelBusActivationStatus,
+);
+availableBusRouter.patch(
+  '/:driverId/deactivate',
+  availableBusController.availableBusDeactivateStatus,
+);
 
 export default availableBusRouter;
