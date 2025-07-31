@@ -34,16 +34,21 @@
   "author": "Bhargav Sourik Vivek",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
     "http-errors": "^2.0.0",
-    "mongoose": "^8.16.1",
+    "mongoose": "^8.16.3",
+    "multer": "^2.0.1",
     "winston": "^3.17.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.0",
     "@jest-mock/express": "^3.0.0",
     "@tsconfig/node22": "^22.0.2",
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.0.7",
     "@types/supertest": "^6.0.3",
     "@types/winston": "^2.4.4",
