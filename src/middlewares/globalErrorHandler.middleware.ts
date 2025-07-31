@@ -1,6 +1,6 @@
 import BusTrackerApiResponse from '#libraries/busTrackerApiResponse.js';
 import { ERROR_STATUS_CODE } from '#types/responseStatusCode.type.js';
-import checkDevelopmentNodeEnvironment from '#utils/envsChecker.js';
+import checkDevelopmentNodeEnvironment from '#utils/checker/envsChecker.js';
 import logger from '#utils/logger/winston-logger.js';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from 'http-errors';
