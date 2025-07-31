@@ -9,6 +9,7 @@ vi.mock('#models/availableBus.model.js', () => ({
   AvailableBus: {
     create: vi.fn(),
     exists: vi.fn(),
+    findOne: vi.fn(),
     updateOne: vi.fn(),
   },
 }));
@@ -87,6 +88,31 @@ describe('Test Available Bus Service', () => {
     expect(AvailableBus.updateOne).toHaveBeenCalledWith(
       { driverId: dummyDriverId },
       { activeStatus: deactivateStatus },
+    );
+  });
+
+  test('should test get Available Bus Status', async () => {
+    (AvailableBus.findOne as Mock).mockResolvedValueOnce({
+      _id: '687f4c6b3fa488286b1bee3b',
+      activeStatus: true,
+      driverId: '6876af41462f8ee0522e97ef',
+    });
+
+    const dummyDriverId = '6876af41462f8ee0522e97ef';
+
+    const result =
+      await availableBusService.getAvailableBusStatus(dummyDriverId);
+
+    expect(result).toStrictEqual({
+      _id: '687f4c6b3fa488286b1bee3b',
+      activeStatus: true,
+      driverId: '6876af41462f8ee0522e97ef',
+    });
+
+    expect(AvailableBus.findOne).toHaveBeenCalledTimes(1);
+    expect(AvailableBus.findOne).toHaveBeenCalledWith(
+      { driverId: dummyDriverId },
+      { activeStatus: 1, driverId: 1 },
     );
   });
 });
