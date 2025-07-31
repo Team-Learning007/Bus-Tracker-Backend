@@ -16,6 +16,7 @@ describe('Test AvailableBus Controller', () => {
     createAvailableBus: Mock;
     driverExists: Mock;
     driverNotExists: Mock;
+    getAvailableBusStatus: Mock;
   };
   let availableBusController: AvailableBusController;
 
@@ -28,6 +29,7 @@ describe('Test AvailableBus Controller', () => {
         createAvailableBus: vi.fn(),
         driverExists: vi.fn(),
         driverNotExists: vi.fn(),
+        getAvailableBusStatus: vi.fn(),
       };
       availableBusController = new AvailableBusController(
         mockAvailableBusService as AvailableBusService,
@@ -288,6 +290,75 @@ describe('Test AvailableBus Controller', () => {
             res as unknown as Response,
           ),
         ).rejects.toThrowError('Driver Id not exists');
+      });
+    });
+
+    describe('Get Available Bus status Function Test', () => {
+      test('should throw error if driverId not provided', async () => {
+        const req = getMockReq({
+          params: {},
+        });
+
+        await expect(
+          availableBusController.getAvailableBusStatus(
+            req as unknown as Request,
+            res as unknown as Response,
+          ),
+        ).rejects.toThrowError('Please Provide Driver Id');
+      });
+
+      test('should throw error if driver not exsits in available bus', async () => {
+        const req = getMockReq({
+          params: { driverId: 'dummyId' },
+        });
+
+        const error = new BadRequest('Driver Id not exists');
+        mockAvailableBusService.getAvailableBusStatus.mockRejectedValueOnce(
+          error,
+        );
+
+        await expect(
+          availableBusController.getAvailableBusStatus(
+            req as unknown as Request,
+            res as unknown as Response,
+          ),
+        ).rejects.toThrowError('Driver Id not exists');
+      });
+
+      test('should return 200 with Bus Active Status Successfully message', async () => {
+        const mockRequest = {
+          driverId: 'dummyId',
+        };
+
+        const req = getMockReq({
+          params: mockRequest,
+        });
+
+        mockAvailableBusService.getAvailableBusStatus.mockResolvedValueOnce({
+          _id: '687f4c6b3fa488286b1bee3b',
+          activeStatus: true,
+          driverId: '6876af41462f8ee0522e97ef',
+        });
+
+        await availableBusController.getAvailableBusStatus(
+          req as unknown as Request,
+          res as unknown as Response,
+        );
+
+        expect(
+          mockAvailableBusService.getAvailableBusStatus,
+        ).toHaveBeenCalledWith(mockRequest.driverId);
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(req.params).toStrictEqual(mockRequest);
+        expect(res.json).toHaveBeenCalledWith({
+          data: {
+            _id: '687f4c6b3fa488286b1bee3b',
+            activeStatus: true,
+            driverId: '6876af41462f8ee0522e97ef',
+          },
+          message: 'Successfully Get Available Bus',
+          success: true,
+        });
       });
     });
   });

@@ -18,5 +18,9 @@ availableBusRouter.patch(
   '/:driverId/deactivate',
   availableBusController.availableBusDeactivateStatus,
 );
+availableBusRouter.get(
+  '/:driverId/status',
+  availableBusController.getAvailableBusStatus,
+);
 
 export default availableBusRouter;

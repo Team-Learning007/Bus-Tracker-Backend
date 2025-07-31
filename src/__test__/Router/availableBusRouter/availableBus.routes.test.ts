@@ -33,6 +33,14 @@ vi.mock('#controllers/availableBus.controller.js', () => {
         });
         return res.status(201).json(response);
       }),
+      getAvailableBusStatus: vi.fn((_req: Request, res: Response) => {
+        const response = new BusTrackerApiResponse(true, 'Mocked Bus Status', {
+          activeStatus: true,
+          deriverId: 'mock-123',
+        });
+
+        return res.status(200).json(response);
+      }),
     })),
   };
 });
@@ -69,5 +77,14 @@ describe('Available Bus Router', () => {
 
     expect(res.status).toBe(200);
     expect(res.text).toBe('{"message":"Mocked Bus Deactivate","success":true}');
+  });
+
+  test('should get status of driver in available bus database on GET "/available-bus/:id/status"', async () => {
+    const res = await request(app).get('/available-bus/dummyId/status');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toBe(
+      `{"data":{"activeStatus":true,"deriverId":"mock-123"},"message":"Mocked Bus Status","success":true}`,
+    );
   });
 });
