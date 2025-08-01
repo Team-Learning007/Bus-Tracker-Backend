@@ -9,6 +9,7 @@ vi.mock('#models/availableBus.model.js', () => ({
   AvailableBus: {
     create: vi.fn(),
     exists: vi.fn(),
+    find: vi.fn(),
     findOne: vi.fn(),
     updateOne: vi.fn(),
   },
@@ -101,7 +102,7 @@ describe('Test Available Bus Service', () => {
     const dummyDriverId = '6876af41462f8ee0522e97ef';
 
     const result =
-      await availableBusService.getAvailableBusStatus(dummyDriverId);
+      await availableBusService.getAvailableBusStatusByDriverId(dummyDriverId);
 
     expect(result).toStrictEqual({
       _id: '687f4c6b3fa488286b1bee3b',
@@ -114,5 +115,42 @@ describe('Test Available Bus Service', () => {
       { driverId: dummyDriverId },
       { activeStatus: 1, driverId: 1 },
     );
+  });
+
+  test('should test get Available Bus List', async () => {
+    const mockBusList = [
+      {
+        _id: '687f4c6b3fa488286b1bee3b',
+        activeStatus: true,
+        driverId: '6876af41462f8ee0522e97ef',
+      },
+      {
+        _id: '687f4c6b3fa488286b1bee33',
+        activeStatus: true,
+        driverId: '6876af41462f8ee0522e97ef',
+      },
+    ];
+
+    (AvailableBus.find as Mock).mockImplementation(() => ({
+      lean: () => Promise.resolve(mockBusList),
+    }));
+
+    const result = await availableBusService.getAvailableBusList();
+
+    expect(result).toEqual([
+      {
+        _id: '687f4c6b3fa488286b1bee3b',
+        activeStatus: true,
+        driverId: '6876af41462f8ee0522e97ef',
+      },
+      {
+        _id: '687f4c6b3fa488286b1bee33',
+        activeStatus: true,
+        driverId: '6876af41462f8ee0522e97ef',
+      },
+    ]);
+    expect(AvailableBus.find).toHaveBeenCalledWith({
+      activeStatus: activateStatus,
+    });
   });
 });

@@ -87,7 +87,19 @@ export class AvailableBusController {
     res.status(201).json(response);
   };
 
-  getAvailableBusStatus = async (req: Request, res: Response) => {
+  getAvailableBusList = async (_req: Request, res: Response) => {
+    const result = await this.availableBusService.getAvailableBusList();
+
+    const response = new BusTrackerApiResponse(
+      true,
+      'Successfully Get Available Bus',
+      result,
+    );
+
+    res.status(200).json(response);
+  };
+
+  getAvailableBusStatusByDriverId = async (req: Request, res: Response) => {
     const { driverId } = req.params;
 
     this.requestChecker.driverId(driverId);
@@ -95,7 +107,7 @@ export class AvailableBusController {
     await this.availableBusService.driverNotExists(driverId);
 
     const result =
-      await this.availableBusService.getAvailableBusStatus(driverId);
+      await this.availableBusService.getAvailableBusStatusByDriverId(driverId);
 
     const response = new BusTrackerApiResponse(
       true,

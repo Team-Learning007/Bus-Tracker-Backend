@@ -33,7 +33,26 @@ vi.mock('#controllers/availableBus.controller.js', () => {
         });
         return res.status(201).json(response);
       }),
-      getAvailableBusStatus: vi.fn((_req: Request, res: Response) => {
+      getAvailableBusList: vi.fn((_req: Request, res: Response) => {
+        const response = new BusTrackerApiResponse(
+          true,
+          'Mocked Bus List Data',
+          [
+            {
+              busId: 'mock-1',
+            },
+            {
+              busId: 'mock-2',
+            },
+            {
+              busId: 'mock-3',
+            },
+          ],
+        );
+
+        return res.status(200).json(response);
+      }),
+      getAvailableBusStatusByDriverId: vi.fn((_req: Request, res: Response) => {
         const response = new BusTrackerApiResponse(true, 'Mocked Bus Status', {
           activeStatus: true,
           deriverId: 'mock-123',
@@ -85,6 +104,15 @@ describe('Available Bus Router', () => {
     expect(res.status).toBe(200);
     expect(res.text).toBe(
       `{"data":{"activeStatus":true,"deriverId":"mock-123"},"message":"Mocked Bus Status","success":true}`,
+    );
+  });
+
+  test('should get available Bus details list on GET "/available-bus"', async () => {
+    const res = await request(app).get('/available-bus');
+
+    expect(res.status).toBe(200);
+    expect(res.text).toBe(
+      `{"data":[{"busId":"mock-1"},{"busId":"mock-2"},{"busId":"mock-3"}],"message":"Mocked Bus List Data","success":true}`,
     );
   });
 });
