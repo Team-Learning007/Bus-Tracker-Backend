@@ -10,6 +10,7 @@ const availableBusController: AvailableBusController =
   new AvailableBusController(availableService);
 
 availableBusRouter.post('/', availableBusController.createAvailableBus);
+availableBusRouter.get('/', availableBusController.getAvailableBusList);
 availableBusRouter.patch(
   '/:driverId/activate',
   availableBusController.availabelBusActivationStatus,
@@ -20,7 +21,7 @@ availableBusRouter.patch(
 );
 availableBusRouter.get(
   '/:driverId/status',
-  availableBusController.getAvailableBusStatus,
+  availableBusController.getAvailableBusStatusByDriverId,
 );
 
 export default availableBusRouter;

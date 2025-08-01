@@ -36,7 +36,10 @@ describe('dbConnect', () => {
     const dbConnect = (await import('#database/dbConnect.js')).default;
 
     await expect(dbConnect()).resolves.not.toThrow();
-    expect(connectMock).toHaveBeenCalledWith('mongodb://test');
+    expect(connectMock).toHaveBeenCalledWith('mongodb://test', {
+      maxPoolSize: 10,
+      minPoolSize: 1,
+    });
   });
 
   test('should throw error in mongoose connection function', async () => {

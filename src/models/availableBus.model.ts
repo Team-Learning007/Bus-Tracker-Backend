@@ -8,6 +8,7 @@ import mongoose, { Model, Schema } from 'mongoose';
 const AvailableBusSchema: Schema = new Schema(
   {
     activeStatus: {
+      index: true,
       required: true,
       type: Boolean,
     },

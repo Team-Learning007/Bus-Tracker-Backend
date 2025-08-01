@@ -8,7 +8,10 @@ const dbConnect = async () => {
   }
 
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGODB_URI, {
+      maxPoolSize: 10,
+      minPoolSize: 1,
+    });
     logger.info(' ............... Successfully mongodb connected ........');
   } catch (error) {
     logger.error(error);

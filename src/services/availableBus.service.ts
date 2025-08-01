@@ -50,7 +50,15 @@ export class AvailableBusService {
       throw new BadRequest('A driver with this ID is not Register yet.');
   };
 
-  getAvailableBusStatus = async (driverId: string) => {
+  getAvailableBusList = async () => {
+    const availbleBusList = await AvailableBus.find({
+      activeStatus: activateStatus,
+    }).lean();
+
+    return availbleBusList;
+  };
+
+  getAvailableBusStatusByDriverId = async (driverId: string) => {
     const availableBus = await AvailableBus.findOne(
       { driverId: driverId },
       { activeStatus: 1, driverId: 1 },
